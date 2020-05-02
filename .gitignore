@@ -1,0 +1,16 @@
+# ignore .vs folder
+.vs/
+
+# ignore debug folder
+bin/
+
+# ignore packages folder (package information see packages.config file)
+packages/
+
+# ignore obj folder
+obj/
+
+# ignore
+*.csproj
+*.user
+*.sln
