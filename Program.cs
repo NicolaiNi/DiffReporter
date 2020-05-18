@@ -8,7 +8,7 @@ using System.Text;
 namespace DiffReporter {
     class Program {
         static void Main(string[] args) {
-            ////Get Path of two Folders: EFAM and Manually
+            ////Get Path of two Folders:
             string rootPath = Directory.GetCurrentDirectory();
 
             var diffHelper = new DiffHelper(rootPath);
