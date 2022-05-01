@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -16,6 +17,7 @@ namespace DiffReporter {
             string user = Environment.UserName;
             string date = DateTime.Today.ToShortDateString().Replace(".", "");
 
+
             string wordFilename = Path.Combine(rootPath, $"report.diff.{date}_{user}.docx");
             if (File.Exists(wordFilename)) {
                 File.Delete(wordFilename);
@@ -25,10 +27,7 @@ namespace DiffReporter {
                 using (WordprocessingDocument package = WordprocessingDocument.Create(generatedDocument, WordprocessingDocumentType.Document)) {
                     MainDocumentPart mainPart = package.AddMainDocumentPart();
 
-                    if (mainPart == null) {
-                        mainPart = package.AddMainDocumentPart();
-                        new Document(new Body()).Save(mainPart);
-                    }
+                    new Document(new Body()).Save(mainPart); 
 
                     HtmlConverter converter = new HtmlConverter(mainPart);
 
@@ -37,6 +36,8 @@ namespace DiffReporter {
                     }
                     mainPart.Document.Save();
                 }
+                
+
                 File.WriteAllBytes(wordFilename, generatedDocument.ToArray());
                 //Process.Start(wordFilename);
             }
@@ -76,10 +77,12 @@ namespace DiffReporter {
 
             foreach (var diff in allDiffFiles.OrderByDescending(d => d.MajorChangeInFile).ThenBy(d => d.NoChange)) {
                 StringBuilder sb = new StringBuilder();
-                //sb.Append("<? xml version = \"1.0\" encoding = \"UTF-8\" ?>");
-                if (diff == allDiffFiles.OrderByDescending(d => d.MajorChangeInFile).ThenBy(d => d.NoChange).First()) {
+
+                if (diff == allDiffFiles.OrderByDescending(d => d.MajorChangeInFile).ThenBy(d => d.NoChange).First())
+                {
                     sb.Append("<ol>");
                 }
+                var t = Path.GetFileName(diff.PairOfComparedFiles.Item1);
                 sb.Append("<li><diff>");
                 sb.Append("<span>Filetype: <i>" + diff.Filetype + "</i></span><br>");
                 sb.Append("<span>FolderOne: " + $"<a href=\"{diff.PairOfComparedFiles.Item1}\">" + Path.GetFileName(diff.PairOfComparedFiles.Item1) + "</a></span><br>");
@@ -90,12 +93,14 @@ namespace DiffReporter {
                     sb.Append("<br>");
                 }
                 sb.Append("</diff></li>");
-                if (diff == allDiffFiles.OrderByDescending(d => d.MajorChangeInFile).ThenBy(d => d.NoChange).Last()) {
+                if (diff == allDiffFiles.OrderByDescending(d => d.MajorChangeInFile).ThenBy(d => d.NoChange).Last())
+                {
                     sb.Append("</ol>");
                 }
                 string diffXml = sb.ToString();
                 main.Add(diffXml);
             }
+            
             return main;
         }
 

@@ -1,11 +1,9 @@
 ﻿using DiffReporter.Logic;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
-namespace DiffReporter {
+namespace DiffReporter
+{
     class Program {
         static void Main(string[] args) {
             ////Get Path of two Folders:
