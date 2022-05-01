@@ -13,3 +13,5 @@ obj/
 # ignore
 *.csproj
 *.user
+
+.vscode/
